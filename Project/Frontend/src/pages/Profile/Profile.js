@@ -9,26 +9,29 @@ import {
   Grid,
   Container,
   Box,
+  CircularProgress,
 } from "@mui/material";
 import Navbar from "../../components/Navbar";
 
 import PostCard from "./PostCard";
 import ProfileCard from "./ProfileCard";
 
-
 const Profile = () => {
   const [profile, setProfile] = useState("");
   const [posts, setPosts] = useState([]);
-  // const [temp, setTemp] = useState({});
+  const [isPofileHere, setIsProfileHere] = useState(false);
   useEffect(() => {
     const token = localStorage.getItem("token");
     const fetchData = async () => {
       try {
-        const response1 = await fetch(`${process.env.REACT_APP_FINAL}/user/getProfile`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response1 = await fetch(
+          `${process.env.REACT_APP_FINAL}/user/getProfile`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         const data1 = await response1.json();
         console.log(data1.data);
 
@@ -44,11 +47,12 @@ const Profile = () => {
         );
         const data2 = await response2.json();
 
-        if(data1.success){
+        if (data1.success) {
           setProfile(data1.data);
-        }
-        if(data2){
-          setPosts(data2);
+          if (data2) {
+            setPosts(data2);
+            setIsProfileHere(true);
+          }
         }
       } catch (err) {
         console.log(err.message);
@@ -60,30 +64,34 @@ const Profile = () => {
   return (
     <>
       <Container maxWidth="lg">
-        <Box>
-          <Navbar />
-          <Grid container xs={12} sm={12} md={12} rowSpacing={2}>
-            <Grid item xs={12}>
-              {/* {console.log(profile)} */}
-              {profile && <ProfileCard profileData={profile} />}
+        <Navbar />
+        {isPofileHere ? (
+          <Box>
+            <Grid container xs={12} sm={12} md={12} rowSpacing={2}>
+              <Grid item xs={12}>
+                {/* {console.log(profile)} */}
+                {profile && <ProfileCard profileData={profile} />}
+              </Grid>
+              <Grid item xs={12}>
+                <Card>
+                  <CardContent>
+                    <Typography variant="h5" component="div" gutterBottom>
+                      About
+                    </Typography>
+                    <Typography variant="body2" gutterBottom>
+                      {profile.about}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+              <Grid item xs={12}>
+                <PostCard posts={posts} user={profile.user} />
+              </Grid>
             </Grid>
-            <Grid item xs={12}>
-              <Card>
-                <CardContent>
-                  <Typography variant="h5" component="div" gutterBottom>
-                    About
-                  </Typography>
-                  <Typography variant="body2" gutterBottom>
-                    {profile.about}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-            <Grid item xs={12}>
-              <PostCard posts={posts} user={profile.user}/>
-            </Grid>
-          </Grid>
-        </Box>
+          </Box>
+        ) : (
+          <CircularProgress />
+        )}
       </Container>
     </>
   );

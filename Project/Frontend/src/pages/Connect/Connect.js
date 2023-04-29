@@ -10,6 +10,7 @@ import {
   Container,
   Box,
   Divider,
+  CircularProgress,
 } from "@mui/material";
 
 // import { Link } from "react-router-dom";
@@ -21,7 +22,7 @@ const Connect = () => {
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [visible, setVisible] = useState(12);
-
+  const [isPresent, setIsPresent] = useState(false);
   useEffect(() => {
     fetch(`${process.env.REACT_APP_FINAL}/user/getAllUser`, {
       method: "GET",
@@ -35,6 +36,7 @@ const Connect = () => {
         // console.log(data);
         if (data) {
           setUsers(data.data);
+          setIsPresent(true);
         }
       })
       .catch((err) => {
@@ -63,7 +65,7 @@ const Connect = () => {
       .then((res) => res.json())
       .then((data) => {
         // console.log(data);
-        if (data.success) {
+        if (data.data !== "Removed") {
           alert(
             "Followed. Navigate to Following and Followers Page to see the results"
           );
@@ -79,71 +81,75 @@ const Connect = () => {
   return (
     <>
       <Container maxWidth="lg">
-        <Box>
-          <Navbar />
-          <Typography
-            variant="h4"
-            textAlign={"center"}
-            component="div"
-            gutterBottom
-            mt={2}
-          >
-            Connect With Others
-          </Typography>
-          <Divider />
-          <Grid container rowSpacing={3} columnSpacing={4} mt={0.5} mb={2}>
-            {/* {console.log(users)} */}
-            {users.slice(0, visible).map((user) => (
-              <Grid item xs={12} sm={6} md={3}>
-                {/* Can be modified to reduce redundancy */}
-                <Card key={user.username}>
-                  {/* <CardMedia
+        <Navbar />
+        {isPresent ? (
+          <Box>
+            <Typography
+              variant="h4"
+              textAlign={"center"}
+              component="div"
+              gutterBottom
+              mt={2}
+            >
+              Connect With Others
+            </Typography>
+            <Divider />
+            <Grid container rowSpacing={3} columnSpacing={4} mt={0.5} mb={2}>
+              {/* {console.log(users)} */}
+              {users.slice(0, visible).map((user) => (
+                <Grid item xs={12} sm={6} md={3}>
+                  {/* Can be modified to reduce redundancy */}
+                  <Card key={user.username}>
+                    {/* <CardMedia
                     component="img"
                     alt="green iguana"
                     height="125"
                     image={ImageUrl}
                   /> */}
-                  <CardContent>
-                    <Typography variant="h4">{user.name}</Typography>
-                    <Typography variant="body1">{user.username}</Typography>
-                  </CardContent>
-                  <CardActions>
-                    <Button
-                      size="small"
-                      sx={{ borderRadius: "16px" }}
-                      fullWidth
-                      color="info"
-                      variant="outlined"
-                      onClick={() => handleProfile(user.username)}
-                    >
-                      View Profile
-                    </Button>
-                    <Button
-                      size="small"
-                      sx={{ borderRadius: "16px" }}
-                      fullWidth
-                      color="info"
-                      variant="outlined"
-                      onClick={() => handleFollow(user.username)}
-                    >
-                      Connect
-                    </Button>
-                  </CardActions>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
-          <Box mt={2} mb={2}>
-            <Button
-              size="large"
-              color="success"
-              fullWidth
-              onClick={ShowMoreItems}
-            >
-              Load more
-            </Button>
+                    <CardContent>
+                      <Typography variant="h4">{user.name}</Typography>
+                      <Typography variant="body1">{user.username}</Typography>
+                    </CardContent>
+                    <CardActions>
+                      <Button
+                        size="small"
+                        sx={{ borderRadius: "16px" }}
+                        fullWidth
+                        color="info"
+                        variant="outlined"
+                        onClick={() => handleProfile(user.username)}
+                      >
+                        View Profile
+                      </Button>
+                      <Button
+                        size="small"
+                        sx={{ borderRadius: "16px" }}
+                        fullWidth
+                        color="info"
+                        variant="outlined"
+                        onClick={() => handleFollow(user.username)}
+                      >
+                        Connect
+                      </Button>
+                    </CardActions>
+                  </Card>
+                </Grid>
+              ))}
+            </Grid>
+            <Box mt={2} mb={2}>
+              <Button
+                size="large"
+                color="success"
+                fullWidth
+                onClick={ShowMoreItems}
+              >
+                Load more
+              </Button>
+            </Box>
           </Box>
-        </Box>
+        ) : (
+          <CircularProgress />
+        )}
       </Container>
     </>
   );

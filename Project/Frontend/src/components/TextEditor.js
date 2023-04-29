@@ -35,6 +35,14 @@ const TextEditor = () => {
   const [document, setDocument] = useState(null);
 
   const handleAddPost = (post) => {
+    if(!title.trim()){
+      alert("Add the Title"); 
+      return;
+    }
+    else if (!content.trim()) {
+      alert("Add some content to add Post");
+      return;
+    }
     fetch(`${process.env.REACT_APP_FINAL}/post/addPost`, {
       method: "POST",
       headers: {

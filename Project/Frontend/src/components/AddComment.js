@@ -14,6 +14,10 @@ const AddComment = (props) => {
   const addEmoji = (emoji) => () => setText(`${text}${emoji}`);
 
   const handleSave = () => {
+    if(!text.trim()){
+      alert("Enter atleast a character to comment");
+      return;
+    }
     let newComment = {
       user_id: props.user,
       comment: text,

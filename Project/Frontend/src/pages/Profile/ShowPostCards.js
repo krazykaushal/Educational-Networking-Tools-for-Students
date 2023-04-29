@@ -5,6 +5,7 @@ import {
   Box,
   Divider,
   Button,
+  CircularProgress,
 } from "@mui/material";
 import { React, useEffect, useState } from "react";
 import Navbar from "../../components/Navbar";
@@ -15,8 +16,8 @@ let user_id = "";
 const ShowPostCards = () => {
   const [posts, setPosts] = useState([]);
   const [visible, setVisible] = useState(4);
+  const [isPresent, setIsPresent] = useState(false);
 
-  const handleUserId = () => {};
 
   useEffect(() => {
     // handleUserId();
@@ -45,6 +46,7 @@ const ShowPostCards = () => {
               setPosts((prevState) => {
                 return data;
               });
+              setIsPresent(true);
             }
           })
           .catch((err) => {
@@ -63,36 +65,47 @@ const ShowPostCards = () => {
   return (
     <>
       <Container maxWidth="lg">
-        <Box>
-          <Navbar />
-          <Typography
-            variant="h4"
-            textAlign={"center"}
-            component="div"
-            gutterBottom
-            mt={2}
-          >
-            My Posts
-          </Typography>
-          <Divider />
-          <Grid container rowSpacing={3} columnSpacing={4} mt={0.5} mb={2}>
-            {posts.slice(0, visible).map((post) => (
-              <Grid item xs={12} sm={6} md={6}>
-                <PostCards key={post.post_id} item={post} comments={post.comments} user={user_id}/>
-              </Grid>
-            ))}
-          </Grid>
-          <Box mt={2} mb={2}>
-            <Button
-              size="large"
-              color="success"
-              fullWidth
-              onClick={ShowMoreItems}
+        <Navbar />
+        {isPresent ? (
+          <Box>
+            <Typography
+              variant="h4"
+              textAlign={"center"}
+              component="div"
+              gutterBottom
+              mt={2}
             >
-              Load more
-            </Button>
+              My Posts
+            </Typography>
+            <Divider />
+            <Grid container rowSpacing={3} columnSpacing={4} mt={0.5} mb={2}>
+              {posts.slice(0, visible).map((post) => (
+                <Grid item xs={12} sm={6} md={6}>
+                  <PostCards
+                    key={post.post_id}
+                    item={post}
+                    comments={post.comments}
+                    user={user_id}
+                  />
+                </Grid>
+              ))}
+            </Grid>
+            <Box mt={2} mb={2}>
+              {posts.length > 8 ? (
+                <Button
+                  size="large"
+                  color="success"
+                  fullWidth
+                  onClick={ShowMoreItems}
+                >
+                  Load more
+                </Button>
+              ) : null}
+            </Box>
           </Box>
-        </Box>
+        ) : (
+          <CircularProgress />
+        )}
       </Container>
     </>
   );

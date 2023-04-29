@@ -12,6 +12,7 @@ import { useNavigate } from "react-router";
 const EditProfile = ({ profile }) => {
   const navigate = useNavigate();
   const [open, setOpen] = React.useState(false);
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
   //   const [name, setName] = React.useState(profile.user.name);
   //   const [description, setDescription] = React.useState(profile.description);
   //   const [about, setAbout] = React.useState(profile.about);
@@ -32,6 +33,17 @@ const EditProfile = ({ profile }) => {
   };
   const handleEdit = () => {
     // console.log(details);
+    setIsSubmitting(true);
+    if (details.description.length > 100) {
+      alert("Description must not exceed 100 characters");
+      setIsSubmitting(false);
+      return;
+    } else if (details.about.length > 500) {
+      alert("About must not exceed 500 characters");
+      setIsSubmitting(false);
+      return;
+    }
+
     const token = localStorage.getItem("token");
     fetch(`${process.env.REACT_APP_FINAL}/user/editProfile`, {
       method: "PUT",
@@ -43,6 +55,7 @@ const EditProfile = ({ profile }) => {
     })
       .then((res) => res.json())
       .then((data) => {
+        handleClose();
         navigate(0);
       })
       .catch((err) => {
@@ -60,7 +73,7 @@ const EditProfile = ({ profile }) => {
 
   return (
     <div>
-      <Button variant="contained" onClick={handleClickOpen} >
+      <Button variant="contained" onClick={handleClickOpen}>
         Edit Profile
       </Button>
       <Dialog open={open} onClose={handleClose}>
@@ -139,7 +152,6 @@ const EditProfile = ({ profile }) => {
             variant="filled"
             fullWidth
             multiline
-            
             minRows={4}
             onChange={handleChange}
           />
@@ -166,11 +178,11 @@ const EditProfile = ({ profile }) => {
           <Button
             onClick={() => {
               handleEdit();
-              handleClose();
             }}
+            disabled={isSubmitting}
             variant="contained"
           >
-            Edit
+            {isSubmitting ? "Editing" : "Edit"}
           </Button>
         </DialogActions>
       </Dialog>

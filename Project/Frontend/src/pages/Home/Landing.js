@@ -126,13 +126,13 @@ const Landing = () => {
               component="img"
               src={image1}
               sx={{
-                width: "90vmin",
-                height: "90vmin",
+                width: "80vmin",
+                height: "80vmin",
                 borderRadius: "50%",
               }}
             ></CardMedia>
           </Grid>
-          <Grid item xs={1} md={2}></Grid>
+          {/* <Grid item xs={1} md={2}></Grid> */}
         </Grid>
       </Box>
     </div>

@@ -16,11 +16,11 @@ const Comment = (props) => {
 
   return (
     <Card variant="outlined" sx={{ mb: 2 }}>
-      {/* console.log(item.user_id[0]); */}
+    {/* console.log(item.user_id[0]); */}
       <CardHeader
         avatar={
           <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-           {item.user_id[0].toUpperCase()}
+           {item.user_id[0]}
           </Avatar>
         }
         title={item.user_id}

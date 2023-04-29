@@ -91,7 +91,7 @@ const UserProfile = () => {
       .then((res) => res.json())
       .then((data) => {
         // console.log(data);
-        if (data.success) {
+        if (data.data !== "Removed") {
           alert(
             "Followed. Navigate to Following and Followers Page to see the results"
           );

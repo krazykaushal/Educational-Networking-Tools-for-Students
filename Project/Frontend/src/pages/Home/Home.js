@@ -1,5 +1,5 @@
 import { React, useState, useEffect } from "react";
-import { Button, Container, Grid, Paper, TextField } from "@mui/material";
+import { Button, CircularProgress, Container, Grid, Paper, TextField } from "@mui/material";
 import { Box } from "@mui/system";
 import Navbar from "../../components/Navbar";
 import PostCards from "../../components/PostCards";
@@ -8,18 +8,22 @@ import SearchIcon from "@mui/icons-material/Search";
 let user_id = "";
 const Home = () => {
   const [posts, setPosts] = useState([]);
-  const [searchInput, setSearchInput] = useState(null);
+  const [searchInput, setSearchInput] = useState("");
+  const [isPostHere, setIsPostHere] = useState(false);
   const [searchPost, setSearchPost] = useState(false); // for search bar
   useEffect(() => {
     setSearchPost(false);
     const token = localStorage.getItem("token");
     const fetchData = async () => {
       try {
-        const response1 = await fetch(`${process.env.REACT_APP_FINAL}/user/getProfile`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response1 = await fetch(
+          `${process.env.REACT_APP_FINAL}/user/getProfile`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         const data1 = await response1.json();
         console.log(data1.data);
         if (data1.success) {
@@ -42,6 +46,7 @@ const Home = () => {
         console.log(data);
         if (data) {
           setPosts(data);
+          setIsPostHere(true);
         }
       })
       .catch((err) => {
@@ -56,6 +61,10 @@ const Home = () => {
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
+    if (!searchInput.trim()) {
+      alert("Please Enter valid Search Input ");
+      return;
+    }
     fetch(`${process.env.REACT_APP_FINAL}/post/getPostsQuery`, {
       method: "POST",
       headers: {
@@ -69,6 +78,7 @@ const Home = () => {
         if (data) {
           setPosts(data);
           setSearchPost(true);
+          setIsPostHere(true);
         }
       })
       .catch((err) => {
@@ -87,7 +97,7 @@ const Home = () => {
               sx={{ marginTop: "1em", marginBottom: "1em", paddingY: "1em" }}
             >
               <form onSubmit={handleSearchSubmit}>
-                <Grid container >
+                <Grid container>
                   <Grid
                     item
                     xs={2}
@@ -131,6 +141,7 @@ const Home = () => {
                 </Grid>
               </form>
             </Paper>
+            {!isPostHere && <CircularProgress /> }
             {searchPost &&
               posts.map((post) => (
                 <PostCards

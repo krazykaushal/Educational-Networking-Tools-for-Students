@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import { Paper, Grid, Avatar, TextField, Button } from "@mui/material";
-import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
+import { Paper, Grid, TextField, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { Divider } from "@mui/material";
 import Alert from "@mui/material/Alert";
-import { Typography, Box } from "@mui/material";
+import { Typography } from "@mui/material";
 
 export const SignUp = () => {
   const navigate = useNavigate();
@@ -12,6 +11,7 @@ export const SignUp = () => {
   const [passwordMatched, setPasswordMatched] = useState(true);
   const [userExist, setUserExist] = useState(false);
   const [profileCreated, setProfileCreated] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [details, setDetails] = useState({
     name: "",
     username: "",
@@ -38,12 +38,42 @@ export const SignUp = () => {
 
   const signUpHandler = async (e) => {
     e.preventDefault();
-
+    setIsSubmitting(true);
     if (details.password !== details.confirm_password) {
       setPasswordMatched(false);
+      setIsSubmitting(false);
+      return;
+    } else if (details.name.length > 32) {
+      alert("Name must not exceed 32 characters");
+      setIsSubmitting(false);
       return;
     } else if (!details.birthplace.trim()) {
       alert("Please Enter correct BirthPlace");
+      setIsSubmitting(false);
+      return;
+    } else if (details.username.length < 6) {
+      alert("Username must be of atleast 6 characters");
+      setIsSubmitting(false);
+      return;
+    } else if (details.username.length > 32) {
+      alert("Username must not exceed 32 characters");
+      setIsSubmitting(false);
+      return;
+    } else if (details.password.length < 6) {
+      alert("Password must be of atleast 6 characters");
+      setIsSubmitting(false);
+      return;
+    } else if (details.password.length > 16) {
+      alert("Password must not exceed 16 characters");
+      setIsSubmitting(false);
+      return;
+    } else if (details.description.length > 100) {
+      alert("Description must not exceed 100 characters");
+      setIsSubmitting(false);
+      return;
+    } else if (details.about.length > 500) {
+      alert("About must not exceed 500 characters");
+      setIsSubmitting(false);
       return;
     }
     const personalDetails = {
@@ -89,10 +119,12 @@ export const SignUp = () => {
 
       if (!data1.success) {
         setUserExist(true);
+        setIsSubmitting(false)
       } else {
         if (data2.success) {
           setProfileCreated(true);
           navigate(0);
+          setIsSubmitting(false)
         }
         // alert("Something Wrong Please Try Again Later")
       }
@@ -221,9 +253,7 @@ export const SignUp = () => {
               fullWidth
               onChange={handleChange}
             />
-            <Typography>
-              Letter Count:{details.about.length}/500
-            </Typography>
+            <Typography>Letter Count:{details.about.length}/500</Typography>
 
             <TextField
               variant="filled"
@@ -245,9 +275,10 @@ export const SignUp = () => {
               variant="contained"
               color="primary"
               fullWidth
+              disabled={isSubmitting}
               style={buttonStyle}
             >
-              Sign Up
+              {isSubmitting ? "Signing Up" : "Sign Up"}
             </Button>
           </Paper>
         </form>

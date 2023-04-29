@@ -19,6 +19,7 @@ const Login = ({ handleChange }) => {
   const navigate = useNavigate();
 
   const[loginError, setLoginError] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [details, setDetails] = useState({
     username: "",
     password: "",
@@ -37,6 +38,7 @@ const Login = ({ handleChange }) => {
 
   const handleSignin = (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
     fetch(`${process.env.REACT_APP_FINAL}/user/login`, {
       method: "POST",
       headers: {
@@ -53,6 +55,7 @@ const Login = ({ handleChange }) => {
           return navigate("/feed");
         } else {
           setLoginError(true);
+          setIsSubmitting(false);
         }
       })
       .catch((err) => {
@@ -132,8 +135,9 @@ const Login = ({ handleChange }) => {
               color="primary"
               fullWidth
               style={buttonStyle}
+              disabled={isSubmitting}
             >
-              Sign in
+              {isSubmitting ? "Signing In": "Sign In"}
             </Button>
           </form>
           <Typography>
