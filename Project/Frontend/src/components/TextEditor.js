@@ -22,7 +22,7 @@ const TextEditor = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data)
+        console.log(data);
         user_id = data.data.user.username;
       });
   }, []);
@@ -35,11 +35,10 @@ const TextEditor = () => {
   const [document, setDocument] = useState(null);
 
   const handleAddPost = (post) => {
-    if(!title.trim()){
-      alert("Add the Title"); 
+    if (!title.trim()) {
+      alert("Add the Title");
       return;
-    }
-    else if (!content.trim()) {
+    } else if (!content.trim()) {
       alert("Add some content to add Post");
       return;
     }
@@ -149,7 +148,7 @@ const TextEditor = () => {
               sx={{ p: "1em" }}
             >
               <Editor
-                apiKey="gu0fysg21lqeq36qwa8mjpn5i0n7bqnvfkrzl5dbsujw6u22"
+                apiKey="dkqpa3tvogrujopa72afr1yziy95oldcaou03xqqa7ynjoxd"
                 onInit={(evt, editor) => (editorRef.current = editor)}
                 initialValue="<p>Share your thoughts here..</p>"
                 init={{
@@ -171,9 +170,11 @@ const TextEditor = () => {
                     "table",
                     "codesample",
                     "autoresize",
+                    "image",
+                    "media"
                   ],
                   toolbar:
-                    "undo redo | blocks | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | charmap table codesample | searchreplace wordcount code | fullscreen ",
+                    "undo redo | blocks | image media | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | charmap table codesample | searchreplace wordcount code | fullscreen ",
                   // toolbar: [
                   //   { name: 'history', items: [ 'undo', 'redo' ] },
                   //   { name: 'styles', items: [ 'blocks' ] },

@@ -24,6 +24,8 @@ const UserProfile = () => {
   const navigate = useNavigate();
   const [prof, setProf] = useState({});
   const [posts, setPosts] = useState([]);
+  const [connect, setConnect] = useState(true);
+  const [followers, setFollowers] = useState([]);
 
   const { id } = useParams();
 
@@ -46,40 +48,49 @@ const UserProfile = () => {
         console.log(err.message);
       }
     };
-    fetchData();
-    fetch(
-      `${process.env.REACT_APP_FINAL}/user/getProfileOfUser?profile=${id}`,
-      {
-        method: "POST",
-      }
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        setProf(data.data);
-        fetch(`${process.env.REACT_APP_FINAL}/post/getPostsUser`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ user_id: id }),
-        })
-          .then((res) => res.json())
-          .then((data) => {
-            console.log(data);
-            setPosts(data);
-          })
-          .catch((err) => {
-            console.log(err.message);
-          });
-      })
-      .catch((err) => {
+    const fetchProf = async () => {
+      try {
+        const res1 = await fetch(
+          `${process.env.REACT_APP_FINAL}/user/getProfileOfUser?profile=${id}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        const data1 = await res1.json();
+        // console.log(data1);
+        setProf(data1.data);
+        setFollowers(() => data1.data.user.follower);
+        // console.log(followers);
+        const res2 = await fetch(
+          `${process.env.REACT_APP_FINAL}/post/getPostsUser`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ user_id: id }),
+          }
+        );
+        const data2 = await res2.json();
+        console.log(data2);
+        setPosts(data2);
+      } catch (err) {
         console.log(err.message);
-      });
-  }, [id]);
-
+      }
+    };
+    fetchData();
+    fetchProf();
+    // console.log(followers);
+    if (followers.find((each) => each.username === user_id)) {
+      setConnect(false);
+    }
+  }, [id, followers.length]);
   const handleFollow = (username) => {
     // console.log("Follow");
+    setConnect(!connect);
     fetch(`${process.env.REACT_APP_FINAL}/user/follow`, {
       method: "POST",
       headers: {
@@ -142,12 +153,12 @@ const UserProfile = () => {
                     activeStyle: { color: "red" },
                     color: "black",
                   }}
-                  component={Link}
-                  to={"/myconnection"}
+                  // component={Link}
+                  // to={"/myconnection"}
                 >
                   <PersonIcon fontSize="large" />
                   <Typography variant="body2" component="div" gutterBottom>
-                    Followers
+                  {prof.user && "Followers (" + prof.user.follower.length+ ")"}
                   </Typography>
                 </Grid>
                 <Grid
@@ -161,12 +172,12 @@ const UserProfile = () => {
                     activeStyle: { color: "red" },
                     color: "black",
                   }}
-                  component={Link}
-                  to={"/myconnection"}
+                  // component={Link}
+                  // to={"/myconnection"}
                 >
                   <PersonIcon fontSize="large" />
                   <Typography variant="body2" component="div" gutterBottom>
-                    Following
+                  {prof.user && "Following (" + prof.user.following.length+ ")"}
                   </Typography>
                 </Grid>
               </Grid>
@@ -198,10 +209,11 @@ const UserProfile = () => {
                     sx={{ borderRadius: "16px" }}
                     fullWidth
                     color="info"
-                    variant="outlined"
+                    variant={connect ? "outlined" : "contained"}
                     onClick={() => handleFollow(prof.user.username)}
                   >
-                    Connect
+                    {/* {console.log(followers)} */}
+                    {connect ? "Connect" : "UnConnect"}
                   </Button>
                 </Grid>
               </Grid>
@@ -244,7 +256,9 @@ const UserProfile = () => {
               </Grid>
             ))}
           </Grid>
-        ) : <CircularProgress />}
+        ) : (
+          <CircularProgress />
+        )}
       </Box>
     </Container>
   );

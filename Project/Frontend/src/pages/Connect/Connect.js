@@ -121,7 +121,7 @@ const Connect = () => {
                       >
                         View Profile
                       </Button>
-                      <Button
+                      {/* <Button
                         size="small"
                         sx={{ borderRadius: "16px" }}
                         fullWidth
@@ -130,7 +130,7 @@ const Connect = () => {
                         onClick={() => handleFollow(user.username)}
                       >
                         Connect
-                      </Button>
+                      </Button> */}
                     </CardActions>
                   </Card>
                 </Grid>
